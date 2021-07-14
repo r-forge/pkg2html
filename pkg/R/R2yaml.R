@@ -38,7 +38,7 @@ person2yaml <- function(x) {
 }
 
 vignette2yaml <- function(pkg) {
-    vig <- tools:::getVignetteInfo("party", NULL, all = TRUE)
+    vig <- tools:::getVignetteInfo(pkg, NULL, all = TRUE)
     rval <- lapply(1:nrow(vig), function(i) {
         r <- list(title = vig[i,"Title"], 
                   url = paste("http://CRAN.R-project.org/web/packages/", 
@@ -75,7 +75,7 @@ NEWS2md <- function(pkg) {
 
     for (v in versions) {
 
-        tmp <- subset(db, Version == v)
+        tmp <- subset(as.data.frame(db), Version == v)
 
         txt <- c("---",
                  "layout: post",
@@ -109,6 +109,7 @@ depends2yaml <- function(pkg, field = c("Depends", "Imports", "Suggests")) {
     fun <- function(field) {
 
         x <- x[grep(pkg, x[, field]), "Package"]
+        if (length(x) == 0) return(NULL)
         url <- paste("http://CRAN.R-project.org/package=", x, sep = "")
 
         rval <- vector(mode = "list", length = length(x))
